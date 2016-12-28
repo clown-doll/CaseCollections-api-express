@@ -47,7 +47,6 @@ router.post('/', function(req, res, next){
 		}
 
 		var token = auth.signToken(user._id);
-		// admin-token : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ODVkMjM2N2QzZDU1MzBjYTA4OWNmYjgiLCJpYXQiOjE0ODI3MzA1ODYsImV4cCI6MTUxNDI4ODE4Nn0.4vWPklrWF1Cnan3EQ5e06TgDOg2nQRXStvwbdLRWtvc
 		return res.json({token: token});
 	})(req, res, next);
 });
