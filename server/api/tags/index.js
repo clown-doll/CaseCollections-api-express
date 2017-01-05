@@ -16,7 +16,7 @@ router.delete('/:id', auth.hasRole('admin'), controller.deleteTag);
 // 修改标签
 router.put('/:id', auth.hasRole('admin'), controller.updateTag);
 
-// 前台
-router.get('/front', controller.getFrontTagList);
+// 前台获取标签列表
+router.get('/:platform', controller.getFrontTagList);
 
 module.exports = router;

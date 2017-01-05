@@ -35,7 +35,7 @@ function isAuthenticated() {
         .use(authToken(true))
         .use(function (err, req, res, next) {
             //expressJwt 错误处理中间件
-            //console.log(err);
+            console.log(err);
             if (err.name === 'UnauthorizedError') {
                 console.log(111);
                 return res.status(401).send();

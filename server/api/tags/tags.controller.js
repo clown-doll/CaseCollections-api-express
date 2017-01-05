@@ -53,7 +53,7 @@ exports.addTag = function (req, res, next) {
         return res.status(422).send({error_msg: error_msg});
     }
 
-    Tag.findOneAsync({name: tagName, platform: tagPlatForm}).then(function (tag) {
+    Tag.findOneAsync({name: tagName, platform: tagPlatForm, category: tagCategory}).then(function (tag) {
 
         if (tag) {
             console.log(tag);
@@ -95,8 +95,12 @@ exports.updateTag = function (req, res, next) {
 };
 
 //前台数据
-exports.getFrontTagList = function (req,res,next) {
-    Tag.findAsync({}).then(function (result) {
+exports.getFrontTagList = function (req, res, next) {
+    //console.log(req);
+    var platform = req.params.platform.toLocaleLowerCase();
+    //console.log(platform);
+
+    Tag.findAsync({platform: platform}).then(function (result) {
         return res.status(200).json({data: result});
     }).catch(function (err) {
         return next(err);
