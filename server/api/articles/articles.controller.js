@@ -135,7 +135,7 @@ exports.getArticle = function (req,res) {
     });
 };
 
-//前台获取文章
+//前台获取单篇文章
 exports.getFrontArticle = function (req, res, next) {
     var id = req.params.id;
     var md = new MarkdownIt({
@@ -151,4 +151,21 @@ exports.getFrontArticle = function (req, res, next) {
     }).catch(function (err) {
         return next(err);
     });
+};
+
+// 前台文章列表
+exports.getFrontArticleList = function (req, res, next) {
+    var tagId = req.params.id;
+
+    Article.find({tags: tagId})
+        .sort({publish_time: -1})
+        .exec()
+        .then(function (ArticleList) {
+            return Article.countAsync().then(function (count) {
+                return res.status(200).json({ data: ArticleList, count:count });
+            });
+        })
+        .catch(function (err) {
+            return next(err);
+        });
 };

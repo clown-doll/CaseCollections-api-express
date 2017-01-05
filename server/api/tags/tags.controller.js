@@ -96,9 +96,7 @@ exports.updateTag = function (req, res, next) {
 
 //前台数据
 exports.getFrontTagList = function (req, res, next) {
-    //console.log(req);
     var platform = req.params.platform.toLocaleLowerCase();
-    //console.log(platform);
 
     Tag.findAsync({platform: platform}).then(function (result) {
         return res.status(200).json({data: result});

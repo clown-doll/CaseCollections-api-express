@@ -8,8 +8,9 @@ var Schema = mongoose.Schema;
 
 var ArticleSchema = new Schema({
     title:{  // 标题
-        type:String,
-        unique: true
+        type:String
+        /*,
+        unique: true*/
     },
     content:String,  // 文章内容
     //一篇文章可以有多个标签
