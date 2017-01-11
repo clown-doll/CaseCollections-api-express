@@ -32,6 +32,10 @@ exports.getFrontTagList = function (req, res, next) {
 exports.getFrontArticleList = function (req, res, next) {
     console.log(req.query.tags);
 
+    var currentPage = (parseInt(req.query.currentPage) > 0)?parseInt(req.query.currentPage):1;
+    var itemsPerPage = (parseInt(req.query.itemsPerPage) > 0)?parseInt(req.query.itemsPerPage):10;
+    var startRow = (currentPage - 1) * itemsPerPage;
+
     if (req.query.tags) {
         var tagsArr = req.query.tags.split(',');
         tagsArr = tagsArr.filter(function(e){return e});
@@ -45,17 +49,19 @@ exports.getFrontArticleList = function (req, res, next) {
     if (tagsArr.length) {
         if (tagsArr.length === 1) {
             conditions = {
-                'tags': {$in:tagsArr}
+                'tags': {$in: tagsArr}
             };
         } else {
             conditions = {
-                '$and': [{'tags':tagsArr}]
+                'tags': {$all: tagsArr}
             };
         }
 
     }
 
     Article.find(conditions)
+        .skip(startRow)
+        .limit(itemsPerPage)
         .sort(sort)
         .exec()
         .then(function (ArticleList) {
