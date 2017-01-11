@@ -56,7 +56,7 @@ ArticleSchema
     });
 
 
-var Article = mongoose.model('Article',ArticleSchema);
+var Article = mongoose.model('Article', ArticleSchema);
 
 var Promise = require('bluebird');
 Promise.promisifyAll(Article);

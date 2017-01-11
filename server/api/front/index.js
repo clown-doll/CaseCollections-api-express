@@ -15,7 +15,7 @@ router.get('/tags/:platform', controller.getFrontTagList);  // 获取前台标�
 * 文章
 * */
 router.get('/articles', controller.getFrontArticleList);  // 获取文章列表
-
+router.get('/articles/:id', controller.getFrontArticle);  // 获取单篇文章
 
 
 module.exports = router;

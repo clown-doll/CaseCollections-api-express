@@ -116,6 +116,8 @@ exports.addArticle = function (req,res,next) {
     var title = req.body.title;
     var caseUrl = req.body.case_url;
     var tags = req.body.tags;
+    var cover = req.body.cover;
+    var preview = req.body.preview;
 
     var error_msg;
     if (!title) {
