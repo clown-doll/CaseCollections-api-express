@@ -3,8 +3,25 @@
 var _ = require('lodash');
 var mongoose = require('mongoose');
 
+var User = mongoose.model('User');
 var Tag = mongoose.model('Tag');
 var Article = mongoose.model('Article');
+
+/*
+ * 用户相关所有方法
+ * */
+exports.getUserInfo = function (req, res) {
+    //console.log(req.user);
+    var userId = req.user._id;
+    //console.log(userId);
+    User.findByIdAsync(userId).then(function (user) {
+        return res.status(200).json(user.userInfo);
+    }).catch(function (err) {
+        console.log(err);
+        return res.status(401).send();
+    });
+};
+
 
 
 /*

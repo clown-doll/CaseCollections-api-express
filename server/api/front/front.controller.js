@@ -36,28 +36,36 @@ exports.getFrontArticleList = function (req, res, next) {
     var itemsPerPage = (parseInt(req.query.itemsPerPage) > 0)?parseInt(req.query.itemsPerPage):10;
     var startRow = (currentPage - 1) * itemsPerPage;
 
+    var conditions = {};
+
     if (req.query.tags) {
         var tagsArr = req.query.tags.split(',');
         tagsArr = tagsArr.filter(function(e){return e});
+
+        if (tagsArr.length) {
+            if (tagsArr.length === 1) {
+                conditions = {
+                    'tags': {$in: tagsArr}
+                };
+            } else {
+                conditions = {
+                    'tags': {$all: tagsArr}
+                };
+            }
+
+        }
     }
 
-    var sort = String(req.query.sortName) || "publish_time";
+    var sort = req.query.sortName || "publish_time";
     sort = "-" + sort;
 
-    var conditions = {};
-
-    if (tagsArr.length) {
-        if (tagsArr.length === 1) {
-            conditions = {
-                'tags': {$in: tagsArr}
-            };
-        } else {
-            conditions = {
-                'tags': {$all: tagsArr}
-            };
+    var c;
+    Article.count(conditions, function (err, count, next) {
+        if (err) {
+            return next(err);
         }
-
-    }
+        c = count;
+    });
 
     Article.find(conditions)
         .skip(startRow)
@@ -65,9 +73,7 @@ exports.getFrontArticleList = function (req, res, next) {
         .sort(sort)
         .exec()
         .then(function (ArticleList) {
-            return Article.countAsync().then(function (count) {
-                return res.status(200).json({ data: ArticleList, count:count });
-            });
+            return res.status(200).json({ data: ArticleList, count: c});
         })
         .catch(function (err) {
             return next(err);
@@ -82,7 +88,6 @@ exports.getFrontArticle = function (req, res, next) {
     });
 
     return Article.findByIdAsync(id).then(function(result) {
-        console.log(result);
         //将content markdown文档转成HTML
         result.content = md.render(result.content);
         result.visit_count++;

@@ -6,6 +6,11 @@ var auth = require('../../auth/auth.service');
 
 var router = express.Router();
 
+/*
+* 用户
+* */
+router.get('/user/me', auth.hasRole('admin'), controller.getUserInfo);
+
 
 /*
 * 标签
