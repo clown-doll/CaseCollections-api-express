@@ -30,7 +30,6 @@ exports.getUserInfo = function (req, res) {
 
 // 获取标签列表
 exports.getTagList = function (req, res, next) {
-    //console.log(req.params);
     var platform = req.params.platform.toLocaleLowerCase();
     var category = req.params.category;
     var condition = {};
@@ -54,7 +53,6 @@ exports.getTagList = function (req, res, next) {
     }).then(null,function (err) {
         return next(err);
     });
-
 };
 
 // 添加标签
@@ -124,6 +122,55 @@ exports.updateTag = function (req, res, next) {
  * 文章相关所有方法
  * */
 
+// 获取博客列表
+exports.getArticleList = function (req,res,next) {
+    var conditions = {};
+    var keyword = req.query.key;
+
+    if (keyword) {
+        console.log(req.query.key);
+        var reg = new RegExp(keyword, 'i');
+
+        conditions = {
+            $or: [
+                {title: {$regex: reg}}
+            ]
+        }
+    }
+
+    var currentPage = (parseInt(req.query.currentPage) > 0)?parseInt(req.query.currentPage):1;
+    var itemsPerPage = (parseInt(req.query.itemsPerPage) > 0)?parseInt(req.query.itemsPerPage):10;
+    var startRow = (currentPage - 1) * itemsPerPage;
+
+    var c;
+    Article.count(conditions, function (err, count, next) {
+        if (err) {
+            return next(err);
+        }
+        c = count;
+    });
+
+    Article.find(conditions,{title: 1, publish_time: 1, _id: 1})
+        .skip(startRow)
+        .limit(itemsPerPage)
+        .sort('-publish_time')
+        .exec().then(function (ArticleList) {
+        return res.status(200).json({ data: ArticleList, count: c});
+    }).then(null,function (err) {
+        return next(err);
+    });
+};
+
+// 删除博客
+exports.destroy = function (req,res,next) {
+    var id = req.params.id;
+    Article.findByIdAndRemoveAsync(id).then(function() {
+        return res.status(200).send({success: true});
+    }).catch(function (err) {
+        return next(err);
+    });
+};
+
 // 添加文章
 exports.addArticle = function (req,res,next) {
 
@@ -159,34 +206,6 @@ exports.addArticle = function (req,res,next) {
     });
 };
 
-// 获取博客列表
-exports.getArticleList = function (req,res,next) {
-    // var currentPage = (parseInt(req.query.currentPage) > 0)?parseInt(req.query.currentPage):1;
-    // var itemsPerPage = (parseInt(req.query.itemsPerPage) > 0)?parseInt(req.query.itemsPerPage):10;
-    // var startRow = (currentPage - 1) * itemsPerPage;
-    //
-    // var sortName = String(req.query.sortName) || "publish_time";
-    // var sortOrder = req.query.sortOrder;
-    // if(sortOrder === 'false'){
-    //     sortName = "-" + sortName;
-    // }
-
-    //var tags = req.query.tags;
-    //console.log(tags);
-
-    Article.find()
-    // .skip(startRow)
-    // .limit(itemsPerPage)
-    // .sort(sortName)
-        .exec().then(function (ArticleList) {
-        return Article.countAsync().then(function (count) {
-            return res.status(200).json({ data: ArticleList, count:count });
-        });
-    }).then(null,function (err) {
-        return next(err);
-    });
-};
-
 // 获取单篇博客
 exports.getArticle = function (req,res) {
     var id = req.params.id;
@@ -199,7 +218,7 @@ exports.getArticle = function (req,res) {
     });
 };
 
-// 后台博客更新
+// 博客更新
 exports.updateArticle = function (req, res, next) {
     var id = req.params.id;
 
@@ -239,12 +258,3 @@ exports.updateArticle = function (req, res, next) {
     });
 };
 
-// 删除博客
-exports.destroy = function (req,res,next) {
-    var id = req.params.id;
-    Article.findByIdAndRemoveAsync(id).then(function() {
-        return res.status(200).send({success: true});
-    }).catch(function (err) {
-        return next(err);
-    });
-};
