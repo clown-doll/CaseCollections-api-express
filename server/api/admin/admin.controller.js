@@ -32,28 +32,57 @@ exports.getUserInfo = function (req, res) {
 exports.getTagList = function (req, res, next) {
     var platform = req.params.platform.toLocaleLowerCase();
     var category = req.params.category;
+    var keyword = req.query.key;
     var condition = {};
 
-    if(platform && category){
-        console.log(12);
+    if (keyword) {
+        var reg = new RegExp(keyword, 'i');
+
         condition = {
-            platform: platform,
-            category: category
-        };
+            $or: [
+                {name: {$regex: reg}}
+            ]
+        }
     }
 
-    console.log(condition);
+    var currentPage = (parseInt(req.query.currentPage) > 0)?parseInt(req.query.currentPage):1;
+    var itemsPerPage = (parseInt(req.query.itemsPerPage) > 0)?parseInt(req.query.itemsPerPage):10;
+    var startRow = (currentPage - 1) * itemsPerPage;
+
+    var c;
+    Tag.find(condition)
+        .where('platform').equals(platform)
+        .where('category').equals(category)
+        .count(function (err, count) {
+            if (err) {
+                return next(err);
+            }
+            c = count;
+        });
 
     Tag.find(condition)
-    //.sort('sort')
-    //.populate('cid')
-        .exec().then(function (tagList) {
-        console.log(tagList);
-        return res.status(200).json({data: tagList});
-    }).then(null,function (err) {
+        .where('platform').equals(platform)
+        .where('category').equals(category)
+        .skip(startRow)
+        .limit(itemsPerPage)
+        .sort('-publish_time')
+        .exec().then(function (TagList) {
+            return res.status(200).json({ data: TagList, count: c});
+        }).then(null,function (err) {
+            return next(err);
+        });
+};
+
+// 删除标签
+exports.deleteTag = function (req, res, next) {
+    var id = req.params.id;
+    return Tag.findByIdAndRemoveAsync(id).then(function() {
+        return res.status(200).json({success: true});
+    }).catch(function (err) {
         return next(err);
     });
 };
+
 
 // 添加标签
 exports.addTag = function (req, res, next) {
@@ -92,15 +121,6 @@ exports.addTag = function (req, res, next) {
     });
 };
 
-// 删除标签
-exports.deleteTag = function (req, res, next) {
-    var id = req.params.id;
-    return Tag.findByIdAndRemoveAsync(id).then(function() {
-        return res.status(200).json({success: true});
-    }).catch(function (err) {
-        return next(err);
-    });
-};
 
 // 更新标签
 exports.updateTag = function (req, res, next) {
@@ -115,7 +135,6 @@ exports.updateTag = function (req, res, next) {
     });
 
 };
-
 
 
 /*
