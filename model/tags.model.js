@@ -8,6 +8,10 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var TagSchema = new Schema({
+    publish_time: {  // 发布时间
+        type: Date,
+        default: Date.now
+    },
     name:{						//标签名称
         type: String
         //unique: true
