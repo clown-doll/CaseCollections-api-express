@@ -31,6 +31,12 @@ router.put('/articles/:id', auth.hasRole('admin'), controller.updateArticle);  /
 router.delete('/articles/:id', auth.hasRole('admin'), controller.destroy);  // 删除博客
 
 
+/*
+* 上传
+*/
+router.post('/upload', auth.hasRole('admin'), controller.Upload);  // 上传图片
+
+
 module.exports = router;
 
 

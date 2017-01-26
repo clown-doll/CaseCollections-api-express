@@ -10,6 +10,7 @@ var path = require('path');
 var fs = require('fs');
 
 
+
 // 链接数据库
 mongoose.connect(config.mongo.uri, config.mongo.options);
 var modelsPath = path.join(__dirname, 'model');
