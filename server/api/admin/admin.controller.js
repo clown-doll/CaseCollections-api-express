@@ -282,14 +282,18 @@ exports.updateArticle = function (req, res, next) {
 
 
 exports.Upload = function (req, res, next) {
-    var upload = muilter.single('file');
+    var upload = muilter.array('file');
+
     upload(req, res, function (err) {
         //添加错误处理
         if (err) {
             return  console.log(err);
         }
-        //文件信息在req.file或者req.files中显示。
-        return res.status(200).json({success:true,images: path.join(__dirname, req.file.path)});
+
+        return res.status(200).json({success:true,images: path.join(__dirname, req.files[0].path)});
+
     });
+
+
 };
 
