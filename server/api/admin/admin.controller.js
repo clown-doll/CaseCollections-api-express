@@ -194,7 +194,7 @@ exports.destroy = function (req,res,next) {
 // 添加文章
 exports.addArticle = function (req,res,next) {
 
-    console.log(req.body);
+    //console.log(typeof req.body.tags);
 
     var content = req.body.content;
     var title = req.body.title;
@@ -211,14 +211,13 @@ exports.addArticle = function (req,res,next) {
     } else if (!caseUrl) {
         error_msg = '案例地址不能为空';
     } else if (!tags) {
-        error_msg = '分类地址不能为空';
+        error_msg = '分类不能为空';
     }
 
     if (error_msg) {
         return res.status(422).send({error_msg: error_msg});
     }
-    //将图片提取存入images,缩略图调用
-    //req.body.images = tools.extractImage(content);
+
     return Article.createAsync(req.body).then(function (result) {
         return res.status(200).json({success: true, article_id: result._id});
     }).catch(function (err) {
@@ -259,7 +258,7 @@ exports.updateArticle = function (req, res, next) {
     } else if (!caseUrl) {
         error_msg = '案例地址不能为空';
     } else if (!tags) {
-        error_msg = '分类地址不能为空';
+        error_msg = '分类不能为空';
     }
 
     if (error_msg) {
