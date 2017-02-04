@@ -194,14 +194,12 @@ exports.destroy = function (req,res,next) {
 // 添加文章
 exports.addArticle = function (req,res,next) {
 
-    //console.log(typeof req.body.tags);
-
     var content = req.body.content;
     var title = req.body.title;
     var caseUrl = req.body.case_url;
     var tags = req.body.tags;
-    var cover = req.body.cover;
-    var preview = req.body.preview;
+    /*var cover = req.body.cover;
+    var preview = req.body.preview;*/
 
     var error_msg;
     if (!title) {
@@ -236,6 +234,7 @@ exports.getArticle = function (req,res) {
         return res.status(500).send();
     });
 };
+
 
 // 博客更新
 exports.updateArticle = function (req, res, next) {
