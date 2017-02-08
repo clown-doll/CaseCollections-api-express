@@ -28,6 +28,8 @@ if(config.seedDB) { require('./config/seed'); }
 
 var app = express();
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 // 日志
 app.use(logger('dev'));
 

@@ -288,10 +288,11 @@ exports.Upload = function (req, res, next) {
             return  console.log(err);
         }
 
-        return res.status(200).json({success:true,images: path.join(__dirname, req.files[0].path)});
+        var paths = req.files[0].path.split('\\');
+        paths.shift();
 
+        return res.status(200).json({success:true,images: `http://localhost:9000/${paths.join('/')}`});
     });
-
 
 };
 
