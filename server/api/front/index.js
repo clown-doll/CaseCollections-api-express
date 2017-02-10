@@ -8,7 +8,7 @@ var router = express.Router();
 /*
 * 标签
 * */
-router.get('/tags/:platform', controller.getFrontTagList);  // 获取前台标签
+router.get('/tags/:platform/:category', controller.getFrontTagList);  // 获取前台标签
 
 
 /*

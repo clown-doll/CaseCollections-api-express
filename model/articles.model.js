@@ -18,6 +18,7 @@ var ArticleSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Tag'
     }],
+    platform: String,
     cover: String,  // 封面图
     preview: String,  // 预览图
     case_url: String,  // 案例地址

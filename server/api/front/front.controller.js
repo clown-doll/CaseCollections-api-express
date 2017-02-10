@@ -15,8 +15,9 @@ var Article = mongoose.model('Article');
 // 获取标签列表
 exports.getFrontTagList = function (req, res, next) {
     var platform = req.params.platform.toLocaleLowerCase();
+    var category = req.params.category.toLocaleLowerCase();
 
-    Tag.findAsync({platform: platform}).then(function (result) {
+    Tag.findAsync({platform: platform, category: category}).then(function (result) {
         return res.status(200).json({data: result});
     }).catch(function (err) {
         return next(err);
@@ -31,6 +32,7 @@ exports.getFrontTagList = function (req, res, next) {
 // 获取博客列表
 exports.getFrontArticleList = function (req, res, next) {
     console.log(req.query.tags);
+    console.log(req.query.platform);
 
     var currentPage = (parseInt(req.query.currentPage) > 0)?parseInt(req.query.currentPage):1;
     var itemsPerPage = (parseInt(req.query.itemsPerPage) > 0)?parseInt(req.query.itemsPerPage):10;
