@@ -24,6 +24,17 @@ exports.getFrontTagList = function (req, res, next) {
     });
 };
 
+// 获取单个标签
+exports.getFrontTag = function (req, res, next) {
+    var id = req.params.id;
+
+    return Tag.findByIdAsync(id).then(function(result) {
+        return res.status(200).json({data:result});
+    }).catch(function (err) {
+        return next(err);
+    });
+};
+
 
 /*
  * 文章相关所有方法
