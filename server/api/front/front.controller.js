@@ -41,22 +41,14 @@ exports.getFrontArticleList = function (req, res, next) {
     var conditions = {};
 
     if (req.query.tags) {
-        var tagsArr = req.query.tags.split(',');
-        tagsArr = tagsArr.filter(function(e){return e});
-
-        if (tagsArr.length) {
-            if (tagsArr.length === 1) {
-                conditions = {
-                    'tags': {$in: tagsArr}
-                };
-            } else {
-                conditions = {
-                    'tags': {$all: tagsArr}
-                };
-            }
-
-        }
+        conditions.tags = req.query.tags;
     }
+
+    if (req.query.platform) {
+        conditions.platform = req.query.platform;
+    }
+
+    console.log(conditions);
 
     var sort = req.query.sortName || "publish_time";
     sort = "-" + sort;

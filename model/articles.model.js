@@ -45,6 +45,7 @@ ArticleSchema
     .get(function() {
         return {
             '_id': this._id,
+            'platform': this.platform,
             'title': this.title,
             'content': this.content,
             'cover': this.cover,
