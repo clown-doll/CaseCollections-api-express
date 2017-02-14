@@ -291,7 +291,7 @@ exports.Upload = function (req, res, next) {
         var paths = req.files[0].path.split('\\');
         paths.shift();
 
-        return res.status(200).json({success:true,images: `http://localhost:9000/${paths.join('/')}`});
+        return res.status(200).json({success:true,images: `http://192.168.238.24:9000/${paths.join('/')}`});
     });
 
 };

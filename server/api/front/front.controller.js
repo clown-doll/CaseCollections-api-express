@@ -42,9 +42,6 @@ exports.getFrontTag = function (req, res, next) {
 
 // 获取博客列表
 exports.getFrontArticleList = function (req, res, next) {
-    console.log(req.query.tags);
-    console.log(req.query.platform);
-
     var currentPage = (parseInt(req.query.currentPage) > 0)?parseInt(req.query.currentPage):1;
     var itemsPerPage = (parseInt(req.query.itemsPerPage) > 0)?parseInt(req.query.itemsPerPage):10;
     var startRow = (currentPage - 1) * itemsPerPage;
@@ -52,14 +49,16 @@ exports.getFrontArticleList = function (req, res, next) {
     var conditions = {};
 
     if (req.query.tags) {
-        conditions.tags = req.query.tags;
+        if (req.query.tags.length === 1) {
+            conditions.tags = {$in: req.query.tags}
+        } else {
+            conditions.tags = {$all: req.query.tags}
+        }
     }
 
     if (req.query.platform) {
         conditions.platform = req.query.platform;
     }
-
-    console.log(conditions);
 
     var sort = req.query.sortName || "publish_time";
     sort = "-" + sort;
