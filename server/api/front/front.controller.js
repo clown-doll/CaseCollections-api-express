@@ -73,6 +73,7 @@ exports.getFrontArticleList = function (req, res, next) {
     });
 
     Article.find(conditions)
+        .populate('tags')
         .skip(startRow)
         .limit(itemsPerPage)
         .sort(sort)

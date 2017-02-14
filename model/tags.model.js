@@ -19,15 +19,6 @@ var TagSchema = new Schema({
     platform: String,
     category: String
 });
-/*
-TagSchema
-    .virtual('info')
-    .get(function() {
-        return {
-            '_id': this._id,
-            'name': this.title
-        };
-    });*/
 
 var Tag = mongoose.model('Tag', TagSchema);
 
