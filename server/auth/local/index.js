@@ -11,14 +11,6 @@ router.post('/', function(req, res, next){
 	// 测试环境不验证
 	if (process.env.NODE_ENV !== 'test') {
 		var error_msg;
-		// console.log(req.body);
-		/*if (!req.body.captcha) {
-			error_msg = '验证码不能为空。';
-		} else if (req.session.captcha !== req.body.captcha.toUpperCase()) {
-			error_msg = '验证码错误。';
-		} else if (req.body.username === '' || req.body.password === ''){
-			error_msg = '用户名和密码不能为空。';
-		}*/
 
 		if (req.body.username === '' || req.body.password === ''){
             error_msg = '用户名和密码不能为空。';
@@ -35,19 +27,20 @@ router.post('/', function(req, res, next){
 	}
 }, function(req, res, next){
 	passport.authenticate('local', function(err, user, info){
-
-		//console.log(user);
-
 		if (err) {
 			return res.status(401).send();
 		}
-		//console.log(info)
+
+        if (! user) {
+            return res.send({success: false, message: '用户不存在或没有权限'});
+        }
+
 		if (info) {
 			return res.status(403).send(info);
 		}
 
 		var token = auth.signToken(user._id);
-		return res.json({token: token});
+		return res.json({success: true, token: token});
 	})(req, res, next);
 });
 
