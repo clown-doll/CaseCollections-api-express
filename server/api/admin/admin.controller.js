@@ -46,7 +46,7 @@ exports.getTagList = function (req, res, next) {
     }
 
     var currentPage = (parseInt(req.query.currentPage) > 0)?parseInt(req.query.currentPage):1;
-    var itemsPerPage = (parseInt(req.query.itemsPerPage) > 0)?parseInt(req.query.itemsPerPage):10;
+    var itemsPerPage = (parseInt(req.query.itemsPerPage) > 0)?parseInt(req.query.itemsPerPage):'';
     var startRow = (currentPage - 1) * itemsPerPage;
 
     var c;
