@@ -18,8 +18,7 @@ exports.getUserInfo = function (req, res) {
     User.findByIdAsync(userId).then(function (user) {
         return res.status(200).json(user.userInfo);
     }).catch(function (err) {
-        console.log(err);
-        return res.status(401).send();
+        return res.status(401).send({msg: "没有权限"});
     });
 };
 
@@ -89,12 +88,12 @@ exports.deleteTag = function (req, res, next) {
 exports.addTag = function (req, res, next) {
     //标签名称不能重复,标签分类名称必须有.
     var error_msg;
-
-    console.log(req.body);
+    //console.log(req.body);
 
     var tagName = req.body.name;
     var tagPlatForm = req.body.platform;
     var tagCategory = req.body.category;
+
     if (!tagName) {
         error_msg = '标签名称不能为空.';
     } else if (!tagCategory) {
@@ -102,18 +101,14 @@ exports.addTag = function (req, res, next) {
     }
 
     if(error_msg){
-        return res.status(422).send({error_msg: error_msg});
+        return res.status(422).send({msg: error_msg});
     }
 
     Tag.findOneAsync({name: tagName, platform: tagPlatForm, category: tagCategory}).then(function (tag) {
-
         if (tag) {
-            console.log(tag);
-            return res.status(403).send({error_msg: '标签名称已经存在.'});
+            return res.status(403).send({msg: '标签名称已经存在.'});
         } else {
-            //console.log(1);
             return Tag.createAsync(req.body).then(function (result) {
-                console.log(result);
                 return res.status(200).json({success: true, tag_id: result._id});
             });
         }
@@ -126,15 +121,16 @@ exports.addTag = function (req, res, next) {
 // 更新标签
 exports.updateTag = function (req, res, next) {
     var id = req.params.id;
+
     if(req.body._id){
         delete req.body._id;
     }
+
     Tag.findByIdAndUpdateAsync(id, req.body, {new: true}).then(function(result){
-        return res.status(200).json({success: true,tag_id: result._id});
+        return res.status(200).json({success: true,data: result});
     }).catch(function(err){
         return next(err);
     });
-
 };
 
 
@@ -213,7 +209,7 @@ exports.addArticle = function (req,res,next) {
     }
 
     if (error_msg) {
-        return res.status(422).send({error_msg: error_msg});
+        return res.status(422).send({msg: error_msg});
     }
 
     return Article.createAsync(req.body).then(function (result) {
@@ -261,7 +257,7 @@ exports.updateArticle = function (req, res, next) {
     }
 
     if (error_msg) {
-        return res.status(422).send({error_msg: error_msg});
+        return res.status(422).send({msg: error_msg});
     }
 
     req.body.updated = new Date();
