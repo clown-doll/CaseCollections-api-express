@@ -60,6 +60,7 @@ exports.getFrontArticleList = function (req, res, next) {
         conditions.platform = req.query.platform;
     }
 
+
     var sort = req.query.sortName || "publish_time";
     sort = "-" + sort;
 
