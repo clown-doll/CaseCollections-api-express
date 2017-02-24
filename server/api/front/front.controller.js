@@ -93,13 +93,16 @@ exports.getFrontArticle = function (req, res, next) {
         html: true //启用html标记转换
     });
 
-    return Article.findByIdAsync(id).then(function(result) {
-        //将content markdown文档转成HTML
-        result.content = md.render(result.content);
-        result.visit_count++;
-        Article.findByIdAndUpdateAsync(id,{$inc:{visit_count:1}});
-        return res.status(200).json({data:result.info});
-    }).catch(function (err) {
-        return next(err);
-    });
+    Article.find({'_id': id})
+        .populate('tags')
+        .exec()
+        .then(function(result) {
+            //将content markdown文档转成HTML
+            result[0].content = md.render(result[0].content);
+            result[0].visit_count++;
+            Article.findByIdAndUpdateAsync(id,{$inc:{visit_count:1}});
+            return res.status(200).json({data:result[0]});
+        }).catch(function (err) {
+            return next(err);
+        });
 };
